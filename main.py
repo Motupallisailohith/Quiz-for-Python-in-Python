@@ -1,6 +1,7 @@
 # %%
 import pickle
 import tkinter as tk
+from tkinter import messagebox
 
 open_users = open("users.pickle", "rb")
 users = pickle.load(open_users)
@@ -82,7 +83,6 @@ class category_window:
         self.label1 = tk.Label(self.frame, text="Please select the category:")
         self.list = tk.Listbox(self.frame)
         self.insert_into_list()
-        self.list.activate(0)
         self.button = tk.Button(self.frame, text="GO!")
         self.button.bind("<Button-1>", self.move_to_quiz)
         self.grid_all()
@@ -94,10 +94,15 @@ class category_window:
         self.button.grid()
         self.frame.grid()
 
-    def move_to_quiz(self, e):
-        selection_index = self.list.curselection()
+    def move_to_quiz(self, e):    
+        try:
+            self.selection_index = self.list.curselection()[0]
+        except:
+            self.selection_index = 0
+
         self.frame.destroy()
-        quiz_window(self.master, categories["names"][selection_index[0]])
+        quiz_window(
+            self.master, categories["names"][self.selection_index], self.username)
 
     def insert_into_list(self):
         for i in range(0, categories["count"]):
@@ -105,11 +110,12 @@ class category_window:
 
 
 class quiz_window:
-    def __init__(self, master, category):
+    def __init__(self, master, category, username):
         self.var = tk.IntVar()
+        self.username = username
         self.master = master
         self.category = category
-        self.master.geometry("146x510")
+        self.master.geometry("510x146")
         self.frame = tk.Frame(self.master)
         self.listbox = tk.Listbox(self.frame)
         self.insert_into_listbox()
@@ -119,7 +125,12 @@ class quiz_window:
         self.r1 = tk.Radiobutton(self.frame, variable=self.var, value=1)
         self.r2 = tk.Radiobutton(self.frame, variable=self.var, value=2)
         self.r3 = tk.Radiobutton(self.frame, variable=self.var, value=3)
-        self.button = tk.Button(self.frame, text="Submit", command=self.submit)
+        self.button = tk.Button(self.frame, bg="grey",
+                                text="Save", command=self.submit)
+        self.button1 = tk.Button(
+            self.frame, bg="grey", text="Exit", command=self.move_to_categories)
+        self.button2 = tk.Button(
+            self.frame, bg="grey", text="Clear", command=self.clear)
         self.grid_all()
         self.select_question("position")
 
@@ -130,14 +141,26 @@ class quiz_window:
         self.r1.grid(row=0, column=1, sticky="NW", pady=(40, 0))
         self.r2.grid(row=0, column=1, sticky="NW", pady=(60, 0))
         self.r3.grid(row=0, column=1, sticky="NW", pady=(80, 0))
-        self.button.grid(row=0, column=1, sticky="NW", pady=(100, 0))
+        self.button.grid(row=0, column=1, sticky="NW", pady=(120, 0))
+        self.button2.grid(row=0, column=1, sticky="N", pady=(120, 0))
+        self.button1.grid(row=0, column=1, sticky="NE", pady=(120, 0))
         self.frame.grid()
+
+    def clear(self):
+        self.answers[self.current_question_index] = None
+        self.button.config(text="Save", bg="grey", state="normal")
 
     def select_question(self, e):
         if e == "position":
             self.current_question_index = 0
         else:
             self.current_question_index = self.listbox.curselection()[0]
+            if(self.answers[self.current_question_index] != None):
+                self.button.config(text="Saved Option "+str(
+                    self.answers[self.current_question_index] + 1)+"!", bg="green", state="disabled")
+            else:
+                self.button.config(text="Save", bg="grey", state="normal")
+
         self.label.config(
             text=self.questions[self.current_question_index]["question"])
         for i in range(0, 4):
@@ -152,20 +175,35 @@ class quiz_window:
 
     def submit(self):
         self.radio_selection = self.var.get()
-        if self.radio_selection == self.questions[self.current_question_index]["answer"]:
-            self.button.config(bg="green")
-        else:
-            self.button.config(bg="red")
+        self.answers[self.current_question_index] = self.radio_selection
+        self.button.config(
+            text="Saved Option "+str(self.radio_selection + 1)+"!", bg="green", state="disabled")
 
     def insert_into_listbox(self):
         open_category = open(self.category+".pickle", "rb")
         self.questions = pickle.load(open_category)
         open_category.close()
+        self.answers = [None]*len(self.questions)
         for i in range(0, len(self.questions)):
             self.listbox.insert(i, "Question "+str(i+1))
 
+    def move_to_categories(self):
+        self.score = 0
+        self.attempted = 0
+        for i in range(0, len(self.questions)):
+            if(self.answers[i] != None):
+                self.attempted += 1
+                if(self.answers[i] == self.questions[i]["answer"]):
+                    self.score += 1
+        messagebox.showinfo("Score", "You got "+str(self.score) +
+                            "/"+str(self.attempted)+" correct!")
+        self.frame.destroy()
+        category_window(self.master, self.username)
+
+# class stats_screen:
 
 # %%
+
 
 def main():
     root = tk.Tk()
@@ -176,5 +214,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-
-# %%
