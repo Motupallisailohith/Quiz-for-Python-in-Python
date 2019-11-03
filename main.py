@@ -115,7 +115,7 @@ class quiz_window:
         self.username = username
         self.master = master
         self.category = category
-        self.master.geometry("510x146")
+        self.master.geometry("710x146")
         self.frame = tk.Frame(self.master)
         self.listbox = tk.Listbox(self.frame)
         self.insert_into_listbox()
@@ -214,3 +214,6 @@ def main():
 if __name__ == "__main__":
     main()
 
+
+
+# %%
