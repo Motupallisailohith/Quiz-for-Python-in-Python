@@ -27,12 +27,12 @@ class MainApplication:
 class login:
     def __init__(self, master):
         self.master = master
+        self.master.title("Quiz Application")
         self.frame = tk.Frame(self.master, bd=100)
-
-        self.label1 = tk.Label(self.frame, text="Already Registered?")
-        self.label2 = tk.Label(self.frame, text="Name")
+        self.label1 = tk.Label(self.frame, text="Already Registered?", font=("Open Sans", 14, "bold"))
+        self.label2 = tk.Label(self.frame, text="Name", font=("Open Sans", 12))
         self.input1 = tk.Entry(self.frame)
-        self.label3 = tk.Label(self.frame, text="Reg No")
+        self.label3 = tk.Label(self.frame, text="Reg No", font=("Open Sans", 12))
         self.input2 = tk.Entry(self.frame)
 
         self.button1 = tk.Button(self.frame, text="Login")
@@ -77,21 +77,22 @@ class category_window:
     def __init__(self, master, username):
         self.username = username
         self.master = master
-        self.master.geometry("145x200")
+        self.master.title("Select Quiz")
+        self.master.geometry("190x300")
         self.frame = tk.Frame(self.master)
-        self.label = tk.Label(self.frame, text="Hey " + self.username + " !")
-        self.label1 = tk.Label(self.frame, text="Please select the category:")
-        self.list = tk.Listbox(self.frame)
+        self.label = tk.Label(self.frame, text="Hey " + self.username + "!", font=("Open Sans", 13, "bold"))
+        self.label1 = tk.Label(self.frame, text="Please select the category:", font=("Open Sans", 12))
+        self.list = tk.Listbox(self.frame, font=("Open Sans", 12))
         self.insert_into_list()
         self.button = tk.Button(self.frame, text="GO!")
         self.button.bind("<Button-1>", self.move_to_quiz)
         self.grid_all()
 
     def grid_all(self):
-        self.label.grid(sticky="W")
-        self.label1.grid(sticky="W")
-        self.list.grid()
-        self.button.grid()
+        self.label.grid(pady=(10,0),padx=(10,0),sticky="W")
+        self.label1.grid(padx=(10,0),sticky="W")
+        self.list.grid(pady=(30,0))
+        self.button.grid(pady=(10,0))
         self.frame.grid()
 
     def move_to_quiz(self, e):    
@@ -115,16 +116,17 @@ class quiz_window:
         self.username = username
         self.master = master
         self.category = category
-        self.master.geometry("710x146")
-        self.frame = tk.Frame(self.master)
-        self.listbox = tk.Listbox(self.frame)
+        self.master.title(category.title() + " Quiz")
+        self.master.geometry("800x380")
+        self.frame = tk.Frame(self.master, bd=100)
+        self.listbox = tk.Listbox(self.frame, font=("Open Sans", 12))
         self.insert_into_listbox()
         self.listbox.bind("<ButtonRelease-1>", self.select_question)
-        self.label = tk.Label(self.frame)
-        self.r0 = tk.Radiobutton(self.frame, variable=self.var, value=0)
-        self.r1 = tk.Radiobutton(self.frame, variable=self.var, value=1)
-        self.r2 = tk.Radiobutton(self.frame, variable=self.var, value=2)
-        self.r3 = tk.Radiobutton(self.frame, variable=self.var, value=3)
+        self.label = tk.Label(self.frame, font=("Open Sans", 14))
+        self.r0 = tk.Radiobutton(self.frame, variable=self.var, value=0,font=("Open Sans", 12,"bold"))
+        self.r1 = tk.Radiobutton(self.frame, variable=self.var, value=1,font=("Open Sans", 12,"bold"))
+        self.r2 = tk.Radiobutton(self.frame, variable=self.var, value=2,font=("Open Sans", 12,"bold"))
+        self.r3 = tk.Radiobutton(self.frame, variable=self.var, value=3,font=("Open Sans", 12,"bold"))
         self.button = tk.Button(self.frame, bg="grey",
                                 text="Save", command=self.submit)
         self.button1 = tk.Button(
@@ -135,15 +137,15 @@ class quiz_window:
         self.select_question("position")
 
     def grid_all(self):
-        self.listbox.grid(row=0, column=0, sticky="W")
-        self.label.grid(row=0, column=1, sticky="N")
-        self.r0.grid(row=0, column=1, sticky="NW", pady=(20, 0))
-        self.r1.grid(row=0, column=1, sticky="NW", pady=(40, 0))
-        self.r2.grid(row=0, column=1, sticky="NW", pady=(60, 0))
-        self.r3.grid(row=0, column=1, sticky="NW", pady=(80, 0))
-        self.button.grid(row=0, column=1, sticky="NW", pady=(120, 0))
-        self.button2.grid(row=0, column=1, sticky="N", pady=(120, 0))
-        self.button1.grid(row=0, column=1, sticky="NE", pady=(120, 0))
+        self.listbox.grid(row=0, column=0, sticky="W", padx=10, pady=10)
+        self.label.grid(row=0, column=1, sticky="N" ,pady=(10,0))
+        self.r0.grid(row=0, column=1, sticky="NW", pady=(40, 0))
+        self.r1.grid(row=0, column=1, sticky="NW", pady=(60, 0))
+        self.r2.grid(row=0, column=1, sticky="NW", pady=(80, 0))
+        self.r3.grid(row=0, column=1, sticky="NW", pady=(100, 0))
+        self.button.grid(row=0, column=1, sticky="NW", pady=(150, 0))
+        self.button2.grid(row=0, column=1, sticky="N", pady=(150, 0))
+        self.button1.grid(row=0, column=1, sticky="NE", pady=(150, 0))
         self.frame.grid()
 
     def clear(self):
