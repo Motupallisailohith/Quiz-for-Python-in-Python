@@ -2,6 +2,7 @@
 import pickle
 import tkinter as tk
 from tkinter import messagebox
+import time
 
 open_users = open("users.pickle", "rb")
 users = pickle.load(open_users)
@@ -116,6 +117,7 @@ class quiz_window:
         self.username = username
         self.master = master
         self.category = category
+        self.timey = int(time.time())
         self.master.title(category.title() + " Quiz")
         self.master.geometry("800x380")
         self.frame = tk.Frame(self.master, bd=100)
@@ -123,6 +125,7 @@ class quiz_window:
         self.insert_into_listbox()
         self.listbox.bind("<ButtonRelease-1>", self.select_question)
         self.label = tk.Label(self.frame, font=("Open Sans", 14))
+        self.timer = tk.Label(self.frame, text="MINS: "+str(60),font=("Open Sans", 12, "bold"))
         self.r0 = tk.Radiobutton(self.frame, variable=self.var, value=0,font=("Open Sans", 12,"bold"))
         self.r1 = tk.Radiobutton(self.frame, variable=self.var, value=1,font=("Open Sans", 12,"bold"))
         self.r2 = tk.Radiobutton(self.frame, variable=self.var, value=2,font=("Open Sans", 12,"bold"))
@@ -135,10 +138,20 @@ class quiz_window:
             self.frame, bg="grey", text="Clear", command=self.clear)
         self.grid_all()
         self.select_question("position")
+        self.update_time()
+
+    def update_time(self):
+        try:
+            left = self.timey+3600-int(time.time())
+            self.timer.config(text="MINS: " + str(int(left/60)))
+            self.master.after(1000, self.update_time)
+        except:
+            print("Timer Stopped!!!!!")
 
     def grid_all(self):
         self.listbox.grid(row=0, column=0, sticky="W", padx=10, pady=10)
         self.label.grid(row=0, column=1, sticky="N" ,pady=(10,0))
+        self.timer.grid(row=0, column = 2,padx=(30,0),pady=(10,0), sticky="NW")
         self.r0.grid(row=0, column=1, sticky="NW", pady=(40, 0))
         self.r1.grid(row=0, column=1, sticky="NW", pady=(60, 0))
         self.r2.grid(row=0, column=1, sticky="NW", pady=(80, 0))

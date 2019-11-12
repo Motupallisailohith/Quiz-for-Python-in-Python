@@ -1,19 +1,30 @@
-# %%
-import pickle
+#%%
+import tkinter as tk
+import time
+import sys
+
+
 
 # %%
-db = open('categories.pickle', 'rb')
-test = pickle.load(db)
-db.close()
+
+
+class App():
+    def __init__(self):
+        self.root = tk.Tk()
+        self.label = tk.Label(text="")
+        self.label.pack()
+        self.update_clock()
+        self.root.mainloop()
+
+    def update_clock(self):
+        now = int(time.time())
+        self.label.configure(text=now)
+        self.root.after(1000, self.update_clock)
+
+app=App()
+    
 
 # %%
-test["names"].append("Mixed Type")
-# %%
-test
 
-# %%
-db_w = open("categories.pickle", 'wb')
-pickle.dump(test, db_w)
-db_w.close()
-
+timey
 # %%
