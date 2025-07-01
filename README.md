@@ -89,6 +89,3 @@ A fully functional GUI-based quiz platform built with Python and Tkinter, featur
 
 This project is open-source and available under the MIT License.
 
----
-
-If you want, I can help you generate badges, contribution guidelines, or even a detailed changelog section — just say the word.
